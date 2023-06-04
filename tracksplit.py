@@ -17,6 +17,22 @@ def hms2msf(timecode_dt):
 	msf = f"{minutes}:{seconds:02d}:00"
 	return msf
 
+def extract_element_strsplit(timestamps_file):
+	"""
+	Same as extract_elements, but using "string_split_join method"
+	"""
+	timecode_cue = []
+	track_string = []
+	with open(timestamps_file, "rt") as timestamps:
+		for line in timestamps:
+			timecode = line.split(" ")[0]
+			if timecode.count(":") == 1:
+				timecode_dt = datetime.strptime(timecode, '%M:%S').time()
+			if timecode.count(":") == 2:
+				timecode_dt = datetime.strptime(timecode, '%H:%M:%S').time()
+			timecode_cue.append(hms2msf(timecode_dt))
+			track_string.append(" ".join(line.split(" ")[1:]))	
+	return timecode_cue, track_string 
 
 def extract_elements(timestamps_file):
 	"""
@@ -84,7 +100,8 @@ def main():
 	"""
 	Split source audio file into individual tracks, given a timestamps file using FFmpeg (option to generate cue sheet without performing split)
 	"""
-	timecode, track_string = extract_elements(timestamps_file)
+	# timecode, track_string = extract_elements(timestamps_file)
+	timecode, track_string = extract_element_strsplit(timestamps_file)
 
 	cue_sheet = df2cue(timecode, track_string, audio_file, artist, album)
 	with open('cue_sheet.cue', "wt") as f:

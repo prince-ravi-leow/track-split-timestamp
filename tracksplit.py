@@ -4,8 +4,6 @@
 # * Option to process video files 
 
 import os
-import re
-import csv
 from datetime import datetime
 
 def hms2msf(timecode_dt):
@@ -62,11 +60,10 @@ def df2cue(timecode, track_string, audio_file, artist, album):
 		cue_sheet += f'\t\tINDEX 01 {timecode[i]}\n'
 	return cue_sheet
 
-def main():
+def tracksplit():
 	"""
 	Split source audio file into individual tracks, given a timestamps file using FFmpeg (option to generate cue sheet without performing split)
 	"""
-	# timecode, track_string = extract_elements(timestamps_file)
 	timecode, track_string = extract_elements(timestamps_file)
 
 	cue_sheet = df2cue(timecode, track_string, audio_file, artist, album)
@@ -124,11 +121,37 @@ if __name__ == '__main__':
 		HOWEVER, should one desire to perform the actual track split with a software of their choice, one can obtain a source audio file-specific cue sheet by providing setting the --only-cue to True, which will BYPASS the dependency entirely.
 		"""))
 
-	parser.add_argument("--timestamps", action="store", dest="timestamps_file", type=str, help="File containing timestamps")
-	parser.add_argument("--audio", action="store", dest="audio_file", type=str, help="Source audio file")
-	parser.add_argument("--artist", action="store", dest="artist", type=str, help="Artist name")
-	parser.add_argument("--album", action="store", dest="album", type=str, help="Album name")
-	parser.add_argument("--only-cue", action="store", dest="only_cue", type=bool, default=False, help="Optional: Output cue file without performing split, when supplied with 'True' argument (Default: False)")
+	parser.add_argument(
+		"--timestamps", 
+		action="store", 
+		dest="timestamps_file", 
+		type=str, 
+		help="File containing timestamps")
+	parser.add_argument(
+		"--audio", 
+		action="store", 
+		dest="audio_file", 
+		type=str, 
+		help="Source audio file")
+	parser.add_argument(
+		"--artist", 
+		action="store", 
+		dest="artist", 
+		type=str, 
+		help="Artist name")
+	parser.add_argument(
+		"--album", 
+		action="store", 
+		dest="album", 
+		type=str, 
+		help="Album name")
+	parser.add_argument(
+		"--only-cue", 
+		action="store", 
+		dest="only_cue", 
+		type=bool, 
+		default=False, 
+		help="Optional: Output cue file without performing split, when supplied with 'True' argument (Default: False)")
 
 	args = parser.parse_args()
 	timestamps_file = args.timestamps_file
@@ -137,4 +160,4 @@ if __name__ == '__main__':
 	album = args.album
 	only_cue = args.only_cue
 
-	main()
+	tracksplit()

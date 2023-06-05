@@ -40,7 +40,7 @@ def extract_elements(timestamps_file):
 			track_string.append(" ".join(line.split(" ")[1:]))	
 	return timecode_cue, track_string 
 
-def df2cue(timecode, track_string, audio_file, artist, album):
+def make_cue(timecode, track_string, audio_file, artist, album):
 	"""
 	Generates a cue sheet for track splitting, given: 
 	* timecode and title strings (of eaqual length)
@@ -58,7 +58,11 @@ def df2cue(timecode, track_string, audio_file, artist, album):
 		cue_sheet += f'\tTRACK {track_number:02d} AUDIO\n'
 		cue_sheet += f'\t\tTITLE "{track_string[i]}"\n'
 		cue_sheet += f'\t\tINDEX 01 {timecode[i]}\n'
-	return cue_sheet
+	audiofile_basename = os.path.basename(audio_file)	
+	cuesheet_filename = f"{os.path.splitext(audiofile_basename)[0]}.cue"
+	with open(cuesheet_filename, "wt") as f:
+		f.write(cue_sheet)
+	return cuesheet_filename
 
 def tracksplit():
 	"""
@@ -66,25 +70,23 @@ def tracksplit():
 	"""
 	timecode, track_string = extract_elements(timestamps_file)
 
-	cue_sheet = df2cue(timecode, track_string, audio_file, artist, album)
-	with open('cue_sheet.cue', "wt") as f:
-		f.write(cue_sheet)
+	cuesheet_filename = make_cue(timecode, track_string, audio_file, artist, album)
+		
 	if not only_cue:
-		try:
-			from ffcuesplitter.user_service import FileSystemOperations
-		except ImportError:
-			print("The required module 'ffcuesplitter' is not found.")
-			print("Please install it by running 'python3 -m pip install ffcuesplitter'")
-			exit(1)
-		current_dir = os.getcwd()
-		out_dir = os.path.join(current_dir, 'tracksplit_output')
+		out_dir = os.path.join(os.getcwd(), 'tracksplit_output')
 		if not os.path.exists(out_dir):
 			os.mkdir(out_dir)
 		else:
+			try:
+				from ffcuesplitter.user_service import FileSystemOperations
+			except ImportError:
+				print("The required module 'ffcuesplitter' is not found.")
+				print("Please install it by running 'python3 -m pip install ffcuesplitter'")
+				exit(1)
 			file_type = audio_file.split(".")[-1]    
 			split = FileSystemOperations(
-				filename='cue_sheet.cue',
-				outputdir=out_dir, 
+				filename = cuesheet_filename,
+				outputdir = out_dir, 
 				outputformat=f"{file_type}",
 				ffmpeg_add_params='-map 0:a', # to avoid errors with cover art 
 				dry=False, 

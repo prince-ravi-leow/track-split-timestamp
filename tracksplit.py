@@ -8,7 +8,7 @@ from datetime import datetime
 
 def hms2msf(timecode_dt):
 	"""
-	Given a datetime object with the %H:%M:%S format, convert to cue-sheet compatible %M:%S:%f timestamp and return respective string (note that this iteration populates the %f component with a single double-zero padding (:00))
+	Given a datetime object with the %H:%M:%S format, convert to cuesheet compatible %M:%S:%f timestamp and return respective string (note that this iteration populates the %f component with a single double-zero padding (:00))
 	"""
 	minutes = timecode_dt.hour*60 + timecode_dt.minute
 	seconds = timecode_dt.second
@@ -17,13 +17,15 @@ def hms2msf(timecode_dt):
 
 def datetime_transform(timecode):
 	"""
-	Detect whether a timecode is %M:%S or %H:%M:%S' (uses the revolutionary method of COUNTING number of colons - AMAZING I know!), encode and return a datetime object
+	Detect whether a timecode is %M:%S or %H:%M:%S' (uses the revolutionary method of COUNTING number of colons - AMAZING I know!), uses datetime module and hms2msf helping function to return a cuesheet compatible timecode string
 	"""
 	if timecode.count(":") == 1:
 		timecode_dt = datetime.strptime(timecode, '%M:%S').time()
+		timecode_string = timecode_dt.strftime('%M:%S:00')
 	if timecode.count(":") == 2:
 		timecode_dt = datetime.strptime(timecode, '%H:%M:%S').time()
-	return timecode_dt
+		timecode_string = hms2msf(timecode_dt)
+	return timecode_string
 
 def extract_elements(timestamps_file):
 	"""
@@ -34,9 +36,8 @@ def extract_elements(timestamps_file):
 	with open(timestamps_file, "rt") as timestamps:
 		for line in timestamps:
 			timecode = line.split(" ")[0]
-			timecode_dt = datetime_transform(timecode)
-			timecode_formatted = hms2msf(timecode_dt)
-			timecode_cue.append(timecode_formatted)
+			timecode_string = datetime_transform(timecode)
+			timecode_cue.append(timecode_string)
 			track_string.append(" ".join(line.split(" ")[1:]))	
 	return timecode_cue, track_string 
 

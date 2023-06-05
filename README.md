@@ -1,6 +1,4 @@
 # Python-based tool for audio file track splitting
-
-I created this script, because of my personal hobby of taking concert audio, and splitting it into tracks, so that I could re-package and enjoy it as an 'album'. 
 The purpose of this program is to provide a convenient way to perform audio file track-splitting, using simple 'YouTube style' timestamps. 
 
 E.g.
@@ -9,6 +7,8 @@ E.g.
 01:20:54 Circle of Life
 02:54:01 Colours of the Wind
 ```
+
+I created this script, because of my personal hobby of taking concert audio, and splitting it into tracks, so that I could re-package and enjoy it as an 'album'. 
 
 ## Pipeline
 In short, this script:

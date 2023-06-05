@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 cue_project/
+.DS_Store

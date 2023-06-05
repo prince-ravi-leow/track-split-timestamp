@@ -82,7 +82,7 @@ def tracksplit():
 	cuesheet_filename = make_cue(timecode, track_string, audio_file, artist, album)
 		
 	if not only_cue:
-		out_dir = os.path.join(os.getcwd(), 'tracksplit_output')
+		out_dir = os.path.join(os.getcwd(), f'{artist}_{album}_tracksplit')
 		if not os.path.exists(out_dir):
 			os.mkdir(out_dir)
 		else:

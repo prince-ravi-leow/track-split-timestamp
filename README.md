@@ -21,7 +21,7 @@ If you're curious, feel free to inspect the `tracksplit.py` docstrings, for more
 I've also included some 'legacy' functions which didn't make the cut, but I think are interesting anyway, in the `Archive` folder.
 
 ## Future
-FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting cababilities for a future release.
+FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting capabilities for a future release (see `TODO.md` for more).
 # Usage
 ```shell
 ./tracksplit.py --timestamps 'timestamps.txt' 

@@ -1,0 +1,1 @@
+* Running tracksplit.py will sometimes result in a 'dry run', where no output is created, except for creating a new output file. The second run seems to work reliably, as intended. 

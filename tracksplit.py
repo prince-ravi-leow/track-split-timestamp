@@ -8,9 +8,7 @@ from datetime import datetime
 
 def hms2msf(timecode_dt):
 	"""
-	Given a datetime object with the %H:%M:%S format, 
-	convert to cuesheet compatible %M:%S:%f timestamp,
-	return respective string 
+	Given a datetime object with the %H:%M:%S format, convert to cuesheet compatible %M:%S:%f timestamp, return respective string 
 	Note: this iteration populates the %f component with a single double-zero padding (:00)
 	"""
 	minutes = timecode_dt.hour*60 + timecode_dt.minute
@@ -20,9 +18,7 @@ def hms2msf(timecode_dt):
 
 def datetime_transform(timecode):
 	"""
-	Detect whether a timecode is %M:%S or %H:%M:%S' 
-	(uses the revolutionary method of COUNTING number of colons 
-	- AMAZING I know!), 
+	Detect whether a timecode is %M:%S or %H:%M:%S' (uses the revolutionary method of COUNTING number of colons - AMAZING I know!), 
 	uses datetime module and hms2msf helping function to return a cuesheet compatible timecode string
 	"""
 	if timecode.count(":") == 1:
@@ -35,8 +31,7 @@ def datetime_transform(timecode):
 
 def extract_elements(timestamps_file):
 	"""
-	Given a text file containing 'YouTube-style timestamps' (where timecodes and titles are separated by a single white-space), 
-	separate timecodes and track strings into their constituent lists. 
+	Given a text file containing 'YouTube-style timestamps' (where timecodes and titles are separated by a single white-space), separate timecodes and track strings into their constituent lists. 
 	This iteration also converts the time strings into the cue-sheet compatible %M:%S:%f timestamp format.
 	"""
 	timecode_cue = []
@@ -106,7 +101,7 @@ def tracksplit():
 				overwr = split.check_for_overwriting()
 				if not overwr:
 					split.work_on_temporary_directory()
-	return
+	# return
 
 if __name__ == '__main__':
 	from argparse import ArgumentParser

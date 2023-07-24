@@ -77,32 +77,29 @@ def tracksplit():
 	cuesheet_filename = make_cue(timecode, track_string, audio_file, artist, album)
 		
 	if not only_cue:
+		try:
+			from ffcuesplitter.user_service import FileSystemOperations
+		except ImportError:
+			print("The required module 'ffcuesplitter' is not found.\nPlease install it by running 'python3 -m pip install ffcuesplitter'")
+			exit(1)
 		out_dir = os.path.join(os.getcwd(), f'{artist}_{album}_tracksplit')
 		if not os.path.exists(out_dir):
 			os.mkdir(out_dir)
+		file_type = audio_file.split(".")[-1]    
+		split = FileSystemOperations(
+			filename = cuesheet_filename,
+			outputdir = out_dir, 
+			outputformat=f"{file_type}",
+			ffmpeg_add_params='-map 0:a', # to avoid errors with cover art 
+			dry=False, 
+			prg_loglevel='info')
+		if split.kwargs['dry']:
+			split.dry_run_mode()
 		else:
-			try:
-				from ffcuesplitter.user_service import FileSystemOperations
-			except ImportError:
-				print("The required module 'ffcuesplitter' is not found.")
-				print("Please install it by running 'python3 -m pip install ffcuesplitter'")
-				exit(1)
-			file_type = audio_file.split(".")[-1]    
-			split = FileSystemOperations(
-				filename = cuesheet_filename,
-				outputdir = out_dir, 
-				outputformat=f"{file_type}",
-				ffmpeg_add_params='-map 0:a', # to avoid errors with cover art 
-				dry=False, 
-				prg_loglevel='info')
-			if split.kwargs['dry']:
-				split.dry_run_mode()
-			else:
-				overwr = split.check_for_overwriting()
-				if not overwr:
-					split.work_on_temporary_directory()
-	# return
-
+			overwr = split.check_for_overwriting()
+			if not overwr:
+				split.work_on_temporary_directory()
+				
 if __name__ == '__main__':
 	from argparse import ArgumentParser
 	from argparse import RawDescriptionHelpFormatter

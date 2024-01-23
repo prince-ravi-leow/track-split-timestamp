@@ -6,27 +6,30 @@
 import os
 from datetime import datetime
 
-def hms2msf(timecode_dt):
-	"""
-	Given a datetime object with the %H:%M:%S format, convert to cuesheet compatible %M:%S:%f timestamp, return respective string 
-	Note: this iteration populates the %f component with a single double-zero padding (:00)
-	"""
-	minutes = timecode_dt.hour*60 + timecode_dt.minute
-	seconds = timecode_dt.second
-	msf = f"{minutes}:{seconds:02d}:00"
-	return msf
-
 def datetime_transform(timecode):
 	"""
 	Detect whether a timecode is %M:%S or %H:%M:%S' (uses the revolutionary method of COUNTING number of colons - AMAZING I know!), 
 	uses datetime module and hms2msf helping function to return a cuesheet compatible timecode string
 	"""
+
+	def hms2msf(timecode_dt):
+		"""
+		Given a datetime object with the %H:%M:%S format, convert to cuesheet compatible %M:%S:%f timestamp, return respective string 
+		Note: this iteration populates the %f component with a single double-zero padding (:00)
+		"""
+		minutes = timecode_dt.hour*60 + timecode_dt.minute
+		seconds = timecode_dt.second
+		msf = f"{minutes}:{seconds:02d}:00"
+		return msf
+
 	if timecode.count(":") == 1:
 		timecode_dt = datetime.strptime(timecode, '%M:%S').time()
 		timecode_string = timecode_dt.strftime('%M:%S:00')
+	
 	if timecode.count(":") == 2:
 		timecode_dt = datetime.strptime(timecode, '%H:%M:%S').time()
 		timecode_string = hms2msf(timecode_dt)
+	
 	return timecode_string
 
 def extract_elements(timestamps_file):
@@ -36,12 +39,14 @@ def extract_elements(timestamps_file):
 	"""
 	timecode_cue = []
 	track_string = []
+	
 	with open(timestamps_file, "rt") as timestamps:
 		for line in timestamps:
 			timecode = line.split(" ")[0]
 			timecode_string = datetime_transform(timecode)
 			timecode_cue.append(timecode_string)
 			track_string.append(" ".join(line.split(" ")[1:]))	
+	
 	return timecode_cue, track_string 
 
 def make_cue(timecode, track_string, audio_file, artist, album):
@@ -51,24 +56,32 @@ def make_cue(timecode, track_string, audio_file, artist, album):
 	* source audio filename
 	* respective artist (PERFORMER) and album (TITLE)
 	"""
+	# Determine file type
 	file_ext = audio_file.split(".")[-1]
 	if file_ext == 'wav':
 		file_type = 'wave'
 	else:
 		file_type = file_ext
+	
+	# Build cue sheet from timecodes and tracks
 	cue_sheet = f'PERFORMER "{artist}"\nTITLE "{album}"\nFILE "{audio_file}" {file_type.upper()}\n'
-	for i in range(len(timecode)):
+
+	for i, (track_string, timecode) in enumerate(zip(track_string, timecode)):
 		track_number = i + 1
 		cue_sheet += f'\tTRACK {track_number:02d} AUDIO\n'
-		cue_sheet += f'\t\tTITLE "{track_string[i]}"\n'
-		cue_sheet += f'\t\tINDEX 01 {timecode[i]}\n'
+		cue_sheet += f'\t\tTITLE "{track_string}"\n'
+		cue_sheet += f'\t\tINDEX 01 {timecode}\n'
+	
+	# Write cue sheet
 	audiofile_basename = os.path.basename(audio_file)	
 	cuesheet_filename = f"{os.path.splitext(audiofile_basename)[0]}.cue"
+	
 	with open(cuesheet_filename, "wt") as f:
 		f.write(cue_sheet)
+	
 	return cuesheet_filename
 
-def tracksplit():
+def tracksplit(timestamps_file, audio_file, artist, album, only_cue):
 	"""
 	Split source audio file into individual tracks, given a timestamps file using FFmpeg (option to generate cue sheet without performing split)
 	"""
@@ -82,17 +95,21 @@ def tracksplit():
 		except ImportError:
 			print("The required module 'ffcuesplitter' is not found.\nPlease install it by running 'python3 -m pip install ffcuesplitter'")
 			exit(1)
+		
+		# Make results directory
 		out_dir = os.path.join(os.getcwd(), f'{artist}_{album}_tracksplit')
 		if not os.path.exists(out_dir):
 			os.mkdir(out_dir)
+		
+		### ffcuesplitter block ###
 		file_type = audio_file.split(".")[-1]    
 		split = FileSystemOperations(
 			filename = cuesheet_filename,
 			outputdir = out_dir, 
-			outputformat=f"{file_type}",
-			ffmpeg_add_params='-map 0:a', # to avoid errors with cover art 
-			dry=False, 
-			prg_loglevel='info')
+			outputformat = f"{file_type}",
+			ffmpeg_add_params = '-map 0:a', # to avoid errors with cover art 
+			dry = False, 
+			prg_loglevel = 'info')
 		if split.kwargs['dry']:
 			split.dry_run_mode()
 		else:
@@ -101,8 +118,7 @@ def tracksplit():
 				split.work_on_temporary_directory()
 				
 if __name__ == '__main__':
-	from argparse import ArgumentParser
-	from argparse import RawDescriptionHelpFormatter
+	from argparse import ArgumentParser, RawDescriptionHelpFormatter
 	import textwrap
 
 	parser = ArgumentParser(
@@ -111,7 +127,7 @@ if __name__ == '__main__':
 		
 		*** EXAMPLE USAGE: *** 
 
-		./tracksplit.py --timestamps 'timestamps.txt' --audio 'concert_audio.mp3' --artist 'Sensible Clown Conglomerate' --album 'The Light Side of the Sun'
+		python3 tracksplit.py --timestamps 'timestamps.txt' --audio 'concert_audio.mp3' --artist 'Sensible Clown Conglomerate' --album 'The Light Side of the Sun'
 		
 		The purpose of this program is: given an existing FFmpeg installation, to split a source audio file using provided 'YouTube style' timestamps e.g.: 
 		
@@ -163,4 +179,9 @@ if __name__ == '__main__':
 	album = args.album
 	only_cue = args.only_cue
 
-	tracksplit()
+	tracksplit(
+		timestamps_file, 
+		audio_file, 
+		artist, 
+		album, 
+		only_cue)

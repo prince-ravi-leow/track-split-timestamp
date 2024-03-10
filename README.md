@@ -24,10 +24,10 @@ I've also included some 'legacy' functions which didn't make the cut, but I thin
 FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting capabilities for a future release (see `TODO.md` for more).
 # Usage
 ```shell
-./tracksplit.py --timestamps 'timestamps.txt' 
-                --audio 'concert_audio.mp3'
-                --artist 'Sensible Clown Conglomerate'
-                --album 'The Light Side of the Sun'
+python3 tracksplit.py --timestamps 'timestamps.txt' 
+                      --audio 'concert_audio.mp3'
+                      --artist 'Sensible Clown Conglomerate'
+                      --album 'The Light Side of the Sun'
 ```
 
 * `--timestaps`: takes a text file containing 'YouTube style' timestamps 

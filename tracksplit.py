@@ -140,37 +140,11 @@ if __name__ == '__main__':
 		HOWEVER, should one desire to perform the actual track split with a software of their choice, one can obtain a source audio file-specific cue sheet by providing setting the --only-cue to True, which will BYPASS the dependency entirely.
 		"""))
 
-	parser.add_argument(
-		"--timestamps", 
-		action="store", 
-		dest="timestamps_file", 
-		type=str, 
-		help="File containing timestamps")
-	parser.add_argument(
-		"--audio", 
-		action="store", 
-		dest="audio_file", 
-		type=str, 
-		help="Source audio file")
-	parser.add_argument(
-		"--artist", 
-		action="store", 
-		dest="artist", 
-		type=str, 
-		help="Artist name")
-	parser.add_argument(
-		"--album", 
-		action="store", 
-		dest="album", 
-		type=str, 
-		help="Album name")
-	parser.add_argument(
-		"--only-cue", 
-		action="store", 
-		dest="only_cue", 
-		type=bool, 
-		default=False, 
-		help="Optional: Output cue file without performing split, when supplied with 'True' argument (Default: False)")
+	parser.add_argument("--timestamps", dest="timestamps_file", type=str, help="File containing timestamps")
+	parser.add_argument("--audio", dest="audio_file", type=str, help="Source audio file")
+	parser.add_argument("--artist", dest="artist", type=str, help="Artist name")
+	parser.add_argument("--album", dest="album", type=str, help="Album name")
+	parser.add_argument("--only-cue", action="store_true", dest="only_cue", default=False, help="Optional: Output cue file without performing split, when supplied with 'True' argument (Default: False)")
 
 	args = parser.parse_args()
 	timestamps_file = args.timestamps_file

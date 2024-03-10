@@ -33,14 +33,14 @@ FFmpeg is actually way more capable than just processing audio files. For this r
 * `--timestaps`: takes a text file containing 'YouTube style' timestamps 
 * `--audio`: takes the source audio file to be split into individual tracks
 * `--artist` and `--album`: respective 'artist' and 'album' metadata will be embedded during splitting process
-* `--only-cue True`: provided, to bypass FFmpeg, and obtain the cue sheet file for your own audio splitting workflow (see **Alternative workflows** section)
+* `--only-cue`: provided, to bypass FFmpeg, and obtain the cue sheet file for your own audio splitting workflow (see **Alternative workflows** section)
 
 # Requirements
 There are a whopping **2** ***(two)*** dependencies for core audio splitting process:
 1) `FFmpeg` - a multimedia framework which [in their own words](https://ffmpeg.org/about.html) can handle 'pretty much anything that humans and machines have created'
 2) `ffcuesplitter` - and a Python package which interfaces the with FFmpeg, using a source audio file specific cue sheet, generated during the pipeline   
 
-**HOWEVER**, if you just want an audio source-file specific cue file you can BYPASS these two dependencies entirely, by providing the argument: `--only-cue True`
+**HOWEVER**, if you just want an audio source-file specific cue file you can BYPASS these two dependencies entirely, by providing the argument: `--only-cue`
 
 ## [FFmpeg](https://ffmpeg.org/)
 If you're on macOS *and* use `homebrew`:

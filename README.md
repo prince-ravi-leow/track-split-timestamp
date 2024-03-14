@@ -12,8 +12,8 @@ I created this script, because of my personal hobby of taking concert audio, and
 
 ## Pipeline
 In short, this script:
-1) Generates takes the audio/timestamps files, and generates a [cue sheet](https://en.wikipedia.org/wiki/Cue_sheet_(computing)) (an intermediary file containing information for how the file is split)
-2) Passes the cuesheet to `FFmpeg` (see **Requirements** section), which performs the split
+1) Takes the audio + timestamps file, and generates a [cue sheet](https://en.wikipedia.org/wiki/Cue_sheet_(computing)) (an intermediate file containing track splitting information)
+2) Uses the cue sheet to perform the split using `FFmpeg` (see **Requirements** section)
 3) Outputs the tracks to directory with the format: `f"{artist}_{album}_tracksplit"` - where 'artist' and 'album' are user-provided (see **Usage** section)
 
 If you're curious, feel free to inspect the `tracksplit.py` docstrings, for more insight into my workflow. 
@@ -24,10 +24,7 @@ I've also included some 'legacy' functions which didn't make the cut, but I thin
 FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting capabilities for a future release (see `TODO.md` for more).
 # Usage
 ```shell
-python3 tracksplit.py --timestamps 'timestamps.txt' 
-                      --audio 'concert_audio.mp3'
-                      --artist 'Sensible Clown Conglomerate'
-                      --album 'The Light Side of the Sun'
+$ python3 tracksplit.py --timestamps 'timestamps.txt' --audio 'concert_audio.mp3' --artist 'Sensible Clown Conglomerate' --album 'The Light Side of the Sun'
 ```
 
 * `--timestaps`: takes a text file containing 'YouTube style' timestamps 
@@ -47,7 +44,7 @@ If you're on macOS *and* use `homebrew`:
 ```shell
 brew install ffmpeg
 ``` 
-Since we're using Python, `conda` installation:
+Since we're using Python, here's the `conda` installation:
 ```shell
 conda install -c conda-forge ffmpeg
 ```

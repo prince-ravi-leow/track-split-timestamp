@@ -21,7 +21,7 @@ If you're curious, feel free to inspect the `tracksplit.py` docstrings, for more
 I've also included some 'legacy' functions which didn't make the cut, but I think are interesting anyway, in the `Archive` folder.
 
 ## Future
-FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting capabilities for a future release (see `TODO.md` for more).
+FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting capabilities for a future release (see Issues tab for more).
 # Usage
 ```shell
 $ python3 tracksplit.py --timestamps 'timestamps.txt' --audio 'concert_audio.mp3' --artist 'Sensible Clown Conglomerate' --album 'The Light Side of the Sun'
@@ -32,7 +32,13 @@ $ python3 tracksplit.py --timestamps 'timestamps.txt' --audio 'concert_audio.mp3
 * `--artist` and `--album`: respective 'artist' and 'album' metadata will be embedded during splitting process
 * `--only-cue`: provided, to bypass FFmpeg, and obtain the cue sheet file for your own audio splitting workflow (see **Alternative workflows** section)
 
-# Requirements
+# Installation
+## The easiest way
+If you use `conda` / `mamba`, the easiest way is with this simple one-liner:
+```sh
+conda create -n track-split python=3.10 ffmpeg && conda activate track-split && pip install ffcuesplitter
+```
+## Alternative installations
 There are a whopping **2** ***(two)*** dependencies for core audio splitting process:
 1) `FFmpeg` - a multimedia framework which [in their own words](https://ffmpeg.org/about.html) can handle 'pretty much anything that humans and machines have created'
 2) `ffcuesplitter` - and a Python package which interfaces the with FFmpeg, using a source audio file specific cue sheet, generated during the pipeline   

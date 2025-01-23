@@ -82,7 +82,7 @@ def make_cue(timecode, track_string, audio_file, artist, album):
     for i, (track_string, timecode) in enumerate(zip(track_string, timecode)):
         track_number = i + 1
         cue_sheet += f"\tTRACK {track_number:02d} AUDIO\n"
-        cue_sheet += f'\t\t"TITLE {track_string}"\n'
+        cue_sheet += f'\t\tTITLE "{track_string}"\n'
         cue_sheet += f"\t\tINDEX 01 {timecode}\n"
 
     # Write cue sheet

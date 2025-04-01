@@ -10,60 +10,51 @@ E.g.
 
 I created this script, because of my personal hobby of taking concert audio, and splitting it into tracks, so that I could re-package and enjoy it as an 'album'. 
 
-## Pipeline
-In short, this script:
-1) Takes the audio + timestamps file, and generates a [cue sheet](https://en.wikipedia.org/wiki/Cue_sheet_(computing)) (an intermediate file containing track splitting information)
-2) Uses the cue sheet to perform the split using `FFmpeg` (see **Requirements** section)
-3) Outputs the tracks to directory with the format: `f"{artist}_{album}_tracksplit"` - where 'artist' and 'album' are user-provided (see **Usage** section)
-
-If you're curious, feel free to inspect the `tracksplit.py` docstrings, for more insight into my workflow. 
-
-I've also included some 'legacy' functions which didn't make the cut, but I think are interesting anyway, in the `Archive` folder.
-
-## Future
-FFmpeg is actually way more capable than just processing audio files. For this reason, I have planned video splitting capabilities for a future release (see Issues tab for more).
 # Usage
-```shell
-$ python3 tracksplit.py --timestamps 'timestamps.txt' --audio 'concert_audio.mp3' --artist 'Sensible Clown Conglomerate' --album 'The Light Side of the Sun'
 ```
+usage: tracksplit.py [-h] [--artist ARTIST] [--album ALBUM] [--only-cue]
+                     timestamps audio
 
-* `--timestaps`: takes a text file containing 'YouTube style' timestamps 
-* `--audio`: takes the source audio file to be split into individual tracks
-* `--artist` and `--album`: respective 'artist' and 'album' metadata will be embedded during splitting process
-* `--only-cue`: provided, to bypass FFmpeg, and obtain the cue sheet file for your own audio splitting workflow (see **Alternative workflows** section)
+The purpose of this program is: given an existing FFmpeg installation, to split a source audio file using provided 'YouTube style' timestamps e.g.: 
+
+00:55:45 Pink Elephants on Parade
+01:20:54 Circle of Life
+02:54:01 Colours of the Wind
+
+positional arguments:
+  timestamps       File containing timestamps
+  audio            Audio file source
+
+options:
+  -h, --help       show this help message and exit
+  --artist ARTIST  Artist name
+  --album ALBUM    Album name
+  --only-cue       Optional: Output cue file without performing split, when supplied
+                   with 'True' argument (Default: False)
+```
 
 # Installation
 ## The easiest way
-If you use `conda` / `mamba`, the easiest way is with this simple one-liner:
+If you use `conda` / `mamba`:
 ```sh
-conda create -n track-split python=3.10 ffmpeg && conda activate track-split && pip install ffcuesplitter
+conda env create --file env.yml
 ```
-## Alternative installations
-There are a whopping **2** ***(two)*** dependencies for core audio splitting process:
-1) `FFmpeg` - a multimedia framework which [in their own words](https://ffmpeg.org/about.html) can handle 'pretty much anything that humans and machines have created'
-2) `ffcuesplitter` - and a Python package which interfaces the with FFmpeg, using a source audio file specific cue sheet, generated during the pipeline   
-
-**HOWEVER**, if you just want an audio source-file specific cue file you can BYPASS these two dependencies entirely, by providing the argument: `--only-cue`
-
-## [FFmpeg](https://ffmpeg.org/)
+## Manual installation
+### Install ffmpeg
 If you're on macOS *and* use `homebrew`:
 ```shell
 brew install ffmpeg
 ``` 
-Since we're using Python, here's the `conda` installation:
-```shell
-conda install -c conda-forge ffmpeg
-```
 Otherwise, official platform-specific installations on [FFmpeg's website](https://ffmpeg.org/download.html).
-
-## [ffcuespliter](https://pypi.org/project/ffcuesplitter/)
-
-Python dependency that interfaces with FFmpeg for the splitting process. See the official [repo](https://github.com/jeanslack/FFcuesplitter) for more info on how it interfaces with FFmpeg. 
-
+### Install ffcuesplitter
 Install through `pip`:
 ```shell
 python3 -m pip install ffcuesplitter 
-```
+``` 
+
+## Why these dependencies?
+1) [FFmpeg](https://ffmpeg.org/) - a multimedia framework which [in their own words](https://ffmpeg.org/about.html) can handle 'pretty much anything that humans and machines have created'
+2) [ffcuespliter](https://pypi.org/project/ffcuesplitter/) - and a Python package which interfaces the with FFmpeg, using a source audio file specific cue sheet, generated during the pipeline. See the official [repo](https://github.com/jeanslack/FFcuesplitter) for more info on how it interfaces with FFmpeg. 
 
 # Alternative workflows
 Apart form FFmpeg, there are other cue-sheet based ways to split the audio track:
